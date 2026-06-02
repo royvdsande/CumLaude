@@ -1,630 +1,910 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CumLaude – Volgorde Leren</title>
+  <title>CumLaude — Learn the Order</title>
   <style>
     :root {
-      --blue:    #1a56a7;
-      --blue-lt: #3b82f6;
-      --bg:      #f0f4f9;
-      --card:    #ffffff;
-      --border:  #d1dce8;
-      --text:    #1e293b;
-      --muted:   #64748b;
-      --green:   #16a34a;
-      --red:     #dc2626;
-      --yellow:  #ca8a04;
-      --radius:  10px;
+      --primary:      #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-soft: #eff6ff;
+      --bg:           #f8fafc;
+      --surface:      #ffffff;
+      --border:       #e2e8f0;
+      --border-strong:#cbd5e1;
+      --text:         #0f172a;
+      --text-soft:    #475569;
+      --muted:        #94a3b8;
+      --green:        #16a34a;
+      --green-soft:   #f0fdf4;
+      --red:          #dc2626;
+      --red-soft:     #fef2f2;
+      --amber:        #d97706;
+      --amber-soft:   #fffbeb;
+      --shadow-sm:    0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.08);
+      --shadow-md:    0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.06);
+      --shadow-lg:    0 10px 25px -5px rgba(15,23,42,.12), 0 8px 10px -6px rgba(15,23,42,.08);
+      --radius:       12px;
+      --radius-sm:    8px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html { -webkit-text-size-adjust: 100%; }
+
     body {
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 0 0 60px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Header ── */
+    /* ─────────── Header ─────────── */
     header {
-      background: var(--blue);
-      color: #fff;
-      padding: 20px 32px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 14px 24px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.18);
     }
-    header h1 { font-size: 1.7rem; letter-spacing: .5px; }
-    header span { font-size: .95rem; opacity: .75; margin-top: 2px; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 800; font-size: 1.1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .brand-text h1 { font-size: 1.15rem; font-weight: 800; letter-spacing: -.02em; }
+    .brand-text p  { font-size: .78rem; color: var(--muted); margin-top: -2px; }
 
-    /* ── Layout ── */
-    main { max-width: 860px; margin: 0 auto; padding: 32px 16px 0; }
+    /* ─────────── Layout ─────────── */
+    main { max-width: 960px; margin: 0 auto; padding: 24px; }
 
-    /* ── Section cards ── */
+    /* ─────────── List bar ─────────── */
+    .listbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-sm);
+      flex-wrap: wrap;
+    }
+    .listbar label {
+      font-size: .72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--muted);
+    }
+    .listbar select {
+      flex: 1;
+      min-width: 160px;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: .92rem;
+      font-weight: 600;
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .listbar select:focus { outline: none; border-color: var(--primary); }
+    .listbar-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    /* ─────────── Tabs ─────────── */
+    .tabs {
+      display: inline-flex;
+      background: #eef2f7;
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      gap: 2px;
+    }
+    .tab {
+      padding: 8px 22px;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      transition: all .15s;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active {
+      background: var(--surface);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ─────────── Cards ─────────── */
     .card {
-      background: var(--card);
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 24px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-sm);
     }
-    .card h2 {
-      font-size: 1.05rem;
-      color: var(--blue);
-      margin-bottom: 16px;
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .card-head h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -.01em;
       display: flex;
       align-items: center;
       gap: 8px;
     }
+    .card-head .sub { font-size: .82rem; color: var(--muted); font-weight: 500; }
 
-    /* ── Tabs ── */
-    .tabs { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
-    .tab {
-      padding: 8px 20px;
-      border-radius: 6px;
-      border: 2px solid var(--border);
-      background: var(--card);
-      cursor: pointer;
-      font-size: .9rem;
-      font-weight: 600;
-      color: var(--muted);
-      transition: all .15s;
-    }
-    .tab:hover { border-color: var(--blue-lt); color: var(--blue); }
-    .tab.active { background: var(--blue); border-color: var(--blue); color: #fff; }
-
-    /* ── Dataset editor ── */
-    #dataset-view table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: .9rem;
-    }
-    #dataset-view th {
-      background: #e8eef5;
-      text-align: left;
-      padding: 8px 12px;
-      font-size: .8rem;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      color: var(--muted);
-    }
-    #dataset-view td {
-      padding: 7px 12px;
-      border-bottom: 1px solid var(--border);
-    }
-    #dataset-view tr:last-child td { border-bottom: none; }
-    #dataset-view tr:hover td { background: #f8fafc; }
-
+    /* ─────────── Buttons ─────────── */
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px 18px;
-      border-radius: 6px;
-      border: none;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
       cursor: pointer;
       font-size: .875rem;
       font-weight: 600;
-      transition: opacity .15s, transform .1s;
+      font-family: inherit;
+      transition: all .15s;
+      white-space: nowrap;
     }
-    .btn:active { transform: scale(.97); }
-    .btn-primary { background: var(--blue); color: #fff; }
-    .btn-primary:hover { opacity: .88; }
-    .btn-secondary { background: #e2e8f0; color: var(--text); }
-    .btn-secondary:hover { background: #cbd5e1; }
-    .btn-danger  { background: #fee2e2; color: var(--red); }
-    .btn-danger:hover { background: #fecaca; }
-    .btn-success { background: var(--green); color: #fff; }
-    .btn-success:hover { opacity: .88; }
-    .btn-sm { padding: 4px 10px; font-size: .78rem; }
+    .btn:active { transform: translateY(1px); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: #fff; box-shadow: var(--shadow-sm); }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-ghost { background: var(--surface); color: var(--text-soft); border-color: var(--border-strong); }
+    .btn-ghost:hover { background: #f1f5f9; color: var(--text); }
+    .btn-danger { background: var(--surface); color: var(--red); border-color: #fecaca; }
+    .btn-danger:hover { background: var(--red-soft); }
+    .btn-success { background: var(--green); color: #fff; box-shadow: var(--shadow-sm); }
+    .btn-success:hover { filter: brightness(.94); }
+    .btn-sm { padding: 5px 10px; font-size: .8rem; }
+    .btn-icon { padding: 6px 9px; }
+    .btn-block { width: 100%; }
 
-    .row-actions { display: flex; gap: 6px; }
-
-    /* Add-event form */
-    .add-form {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-    }
-    .add-form input {
-      flex: 1;
-      min-width: 120px;
-      padding: 8px 12px;
-      border: 1.5px solid var(--border);
-      border-radius: 6px;
-      font-size: .875rem;
-    }
-    .add-form input:focus { outline: none; border-color: var(--blue-lt); }
-
-    /* ── Game config ── */
-    .config-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-    @media (max-width: 520px) { .config-grid { grid-template-columns: 1fr; } }
-
-    .config-item label {
-      display: block;
-      font-size: .8rem;
-      font-weight: 600;
+    /* ─────────── Item list (editor) ─────────── */
+    .item-list { display: flex; flex-direction: column; gap: 8px; }
+    .empty-state {
+      text-align: center;
+      padding: 36px 20px;
       color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .4px;
+      font-size: .9rem;
+    }
+    .empty-state .big { font-size: 2rem; margin-bottom: 8px; display: block; }
+
+    .editor-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      transition: border-color .15s;
+    }
+    .editor-row:hover { border-color: var(--border-strong); }
+    .editor-row .num {
+      width: 24px; height: 24px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      color: var(--muted);
+      font-size: .74rem;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .editor-row .year {
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--primary);
+      min-width: 72px;
+      flex-shrink: 0;
+    }
+    .editor-row .year:empty::before { content: "—"; color: var(--muted); font-weight: 400; }
+    .editor-row .desc { flex: 1; font-size: .9rem; }
+    .editor-row .ctrl { display: flex; gap: 4px; flex-shrink: 0; }
+
+    /* ─────────── Inputs ─────────── */
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block;
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--text-soft);
       margin-bottom: 6px;
     }
-    .config-item select, .config-item input[type=number] {
+    .field .hint { font-weight: 400; color: var(--muted); font-size: .76rem; }
+    input[type=text], input[type=number], textarea, select {
       width: 100%;
-      padding: 9px 12px;
+      padding: 10px 13px;
       border: 1.5px solid var(--border);
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       font-size: .9rem;
-      background: var(--card);
+      font-family: inherit;
+      color: var(--text);
+      background: var(--surface);
+      transition: border-color .15s, box-shadow .15s;
     }
-    .config-item select:focus,
-    .config-item input[type=number]:focus { outline: none; border-color: var(--blue-lt); }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+    textarea { resize: vertical; min-height: 130px; line-height: 1.6; font-size: .88rem; }
+    .inline-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .inline-row > * { flex: 1; min-width: 120px; }
 
-    /* ── Game board ── */
+    /* ─────────── Config grid ─────────── */
+    .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 560px) { .config-grid { grid-template-columns: 1fr; } }
+
+    /* ─────────── Game ─────────── */
     #game-view { display: none; }
-
-    .game-header {
+    .game-stats {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .game-header h2 { font-size: 1.1rem; color: var(--blue); }
-
-    .game-info {
-      display: flex;
-      gap: 16px;
-      font-size: .85rem;
+      gap: 18px;
+      font-size: .82rem;
       color: var(--muted);
-      align-items: center;
     }
-    .game-info strong { color: var(--text); }
+    .game-stats strong { color: var(--text); font-weight: 700; }
 
-    /* sortable list */
-    #sortable-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
+    #sortable { list-style: none; display: flex; flex-direction: column; gap: 8px; }
     .sort-item {
       display: flex;
       align-items: center;
       gap: 12px;
-      background: var(--card);
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      padding: 12px 16px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 13px 16px;
       cursor: grab;
       user-select: none;
-      transition: box-shadow .15s, border-color .15s, background .15s;
-      position: relative;
+      transition: border-color .12s, box-shadow .12s, background .12s, transform .08s;
     }
+    .sort-item:hover { border-color: var(--border-strong); }
     .sort-item:active { cursor: grabbing; }
-    .sort-item.dragging {
-      opacity: .45;
-      border-color: var(--blue-lt);
-    }
-    .sort-item.drag-over {
-      border-color: var(--blue-lt);
-      background: #eff6ff;
-      box-shadow: 0 0 0 3px rgba(59,130,246,.2);
-    }
-    .sort-item.correct {
-      border-color: var(--green);
-      background: #f0fdf4;
-    }
-    .sort-item.wrong {
-      border-color: var(--red);
-      background: #fff1f2;
-    }
+    .sort-item.dragging { opacity: .4; border-color: var(--primary); border-style: dashed; }
+    .sort-item.drag-over { box-shadow: 0 -3px 0 -1px var(--primary); }
+    .sort-item.correct { border-color: var(--green); background: var(--green-soft); }
+    .sort-item.wrong   { border-color: var(--red);   background: var(--red-soft); }
 
-    .drag-handle {
-      color: #94a3b8;
-      font-size: 1.1rem;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-    .item-pos {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: #e8eef5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: .75rem;
-      font-weight: 700;
-      color: var(--muted);
-      flex-shrink: 0;
-    }
-    .item-text { flex: 1; font-size: .925rem; }
-    .item-year {
-      font-size: .8rem;
-      color: var(--muted);
-      font-style: italic;
-    }
-    .item-status { font-size: 1.1rem; flex-shrink: 0; width: 20px; text-align: center; }
-
-    /* ── Result banner ── */
-    #result-banner {
-      display: none;
-      border-radius: var(--radius);
-      padding: 18px 22px;
-      margin-top: 20px;
-      font-size: .95rem;
-    }
-    #result-banner.success {
-      background: #f0fdf4;
-      border: 2px solid var(--green);
-      color: var(--green);
-    }
-    #result-banner.partial {
-      background: #fffbeb;
-      border: 2px solid var(--yellow);
-      color: var(--yellow);
-    }
-    #result-banner.fail {
-      background: #fff1f2;
-      border: 2px solid var(--red);
-      color: var(--red);
-    }
-    #result-banner h3 { font-size: 1.1rem; margin-bottom: 4px; }
-    #result-banner p  { font-size: .875rem; opacity: .85; }
-
-    .action-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-    }
-
-    /* ── Score badge ── */
-    .score-badge {
-      display: inline-block;
-      background: var(--blue);
-      color: #fff;
-      border-radius: 20px;
-      padding: 2px 10px;
-      font-size: .8rem;
-      font-weight: 700;
-      margin-left: 8px;
-    }
-
-    /* ── Toast ── */
-    #toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: #1e293b;
-      color: #fff;
-      padding: 10px 22px;
+    .sort-item .handle { color: var(--muted); font-size: 1.05rem; line-height: 1; cursor: grab; flex-shrink: 0; }
+    .sort-item .pos {
+      width: 28px; height: 28px;
       border-radius: 8px;
-      font-size: .875rem;
-      transition: transform .3s ease;
-      z-index: 9999;
-      pointer-events: none;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: .78rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .sort-item.correct .pos { background: #dcfce7; color: var(--green); }
+    .sort-item.wrong   .pos { background: #fee2e2; color: var(--red); }
+    .sort-item .txt { flex: 1; font-size: .92rem; }
+    .sort-item .yr  { font-size: .8rem; color: var(--muted); font-style: italic; flex-shrink: 0; }
+    .sort-item .st  { font-size: 1.05rem; width: 18px; text-align: center; flex-shrink: 0; }
+
+    /* ─────────── Result banner ─────────── */
+    #result { display: none; border-radius: var(--radius-sm); padding: 16px 20px; margin-top: 18px; border: 1.5px solid; }
+    #result.success { background: var(--green-soft); border-color: var(--green); color: #15803d; }
+    #result.partial { background: var(--amber-soft); border-color: var(--amber); color: #b45309; }
+    #result.fail    { background: var(--red-soft);   border-color: var(--red);   color: #b91c1c; }
+    #result h3 { font-size: 1rem; font-weight: 700; }
+    #result p  { font-size: .85rem; margin-top: 3px; opacity: .9; }
+    .progress { height: 7px; background: rgba(0,0,0,.08); border-radius: 99px; margin-top: 12px; overflow: hidden; }
+    .progress > div { height: 100%; border-radius: 99px; transition: width .4s ease; }
+
+    .action-row { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+
+    /* ─────────── Modal ─────────── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(15,23,42,.5);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      width: 100%; max-width: 420px;
+      padding: 24px;
+      animation: pop .18s ease;
+    }
+    @keyframes pop { from { transform: scale(.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 16px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+    /* ─────────── Toast ─────────── */
+    #toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(90px);
+      background: var(--text); color: #fff;
+      padding: 11px 22px; border-radius: 10px;
+      font-size: .875rem; font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      transition: transform .3s cubic-bezier(.2,.9,.3,1);
+      z-index: 200; pointer-events: none; max-width: 90vw;
     }
     #toast.show { transform: translateX(-50%) translateY(0); }
-
-    /* ── Responsive ── */
-    @media (max-width: 600px) {
-      header { padding: 14px 18px; }
-      header h1 { font-size: 1.3rem; }
-      .card { padding: 16px; }
-    }
+    #toast.err { background: var(--red); }
 
     .hidden { display: none !important; }
+
+    @media (max-width: 600px) {
+      main { padding: 16px; }
+      .card { padding: 18px; }
+      .header-inner { padding: 12px 16px; }
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <div>
-    <h1>CumLaude</h1>
-    <span>Leer de volgorde van historische gebeurtenissen</span>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="logo">CL</div>
+      <div class="brand-text">
+        <h1>CumLaude</h1>
+        <p>Master the order of anything</p>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-tab="edit"  onclick="switchTab('edit')">Edit</button>
+      <button class="tab"        data-tab="play"  onclick="switchTab('play')">Study</button>
+    </div>
   </div>
 </header>
 
 <main>
 
-  <!-- ── TABS ── -->
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('dataset')">📚 Gegevens</button>
-    <button class="tab" onclick="switchTab('play')">🎮 Spelen</button>
-  </div>
-
-  <!-- ════ DATASET TAB ════ -->
-  <div id="dataset-view">
-    <div class="card">
-      <h2>📋 Gebeurtenissen</h2>
-      <table id="events-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Jaar / Periode</th>
-            <th>Gebeurtenis</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="events-body"></tbody>
-      </table>
-
-      <div class="add-form">
-        <input id="new-year"  type="text" placeholder="Jaar (bijv. 793 of 700–750)" />
-        <input id="new-event" type="text" placeholder="Beschrijving van de gebeurtenis" />
-        <button class="btn btn-primary" onclick="addEvent()">＋ Toevoegen</button>
-      </div>
+  <!-- ─── List selector bar ─── -->
+  <div class="listbar">
+    <label for="list-select">List</label>
+    <select id="list-select" onchange="selectList(this.value)"></select>
+    <div class="listbar-actions">
+      <button class="btn btn-ghost btn-sm" onclick="openListModal('new')">＋ New</button>
+      <button class="btn btn-ghost btn-sm" onclick="openListModal('rename')">✎ Rename</button>
+      <button class="btn btn-ghost btn-sm" onclick="duplicateList()">⧉ Duplicate</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteList()">🗑 Delete</button>
     </div>
   </div>
 
-  <!-- ════ PLAY TAB ════ -->
+  <!-- ════════ EDIT TAB ════════ -->
+  <div id="edit-view">
+
+    <!-- Quick paste import -->
+    <div class="card">
+      <div class="card-head">
+        <h2>⚡ Quick add</h2>
+        <span class="sub">One item per line</span>
+      </div>
+      <div class="field">
+        <label>
+          Paste your items
+          <span class="hint">— each line becomes an item. Use <code>year | description</code>, <code>year - description</code> or just plain text.</span>
+        </label>
+        <textarea id="bulk-input" placeholder="410 | Romans leave Britain&#10;450 | Anglo-Saxon-Jutish invasion&#10;597 | St. Augustine (Christianisation)&#10;..."></textarea>
+      </div>
+      <div class="inline-row" style="align-items:center">
+        <label style="flex:0 0 auto;display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--text-soft);font-weight:600;cursor:pointer;min-width:0">
+          <input type="checkbox" id="replace-toggle" style="width:auto;flex:0 0 auto" />
+          Replace existing items
+        </label>
+        <div style="flex:1"></div>
+        <button class="btn btn-primary" style="flex:0 0 auto" onclick="bulkImport()">Add items</button>
+      </div>
+    </div>
+
+    <!-- Item editor -->
+    <div class="card">
+      <div class="card-head">
+        <h2>📋 Items <span class="sub" id="item-count"></span></h2>
+        <button class="btn btn-ghost btn-sm" onclick="clearAllItems()">Clear all</button>
+      </div>
+      <div id="item-list" class="item-list"></div>
+
+      <div class="inline-row" style="margin-top:16px">
+        <input id="new-year"  type="text" placeholder="Year (e.g. 793)" style="flex:0 0 130px" />
+        <input id="new-desc"  type="text" placeholder="Description" onkeydown="if(event.key==='Enter')addOne()" />
+        <button class="btn btn-primary" style="flex:0 0 auto" onclick="addOne()">Add</button>
+      </div>
+      <p style="font-size:.78rem;color:var(--muted);margin-top:12px">
+        💡 The order shown here is the <strong>correct</strong> order. Use the arrows to reorder.
+      </p>
+    </div>
+  </div>
+
+  <!-- ════════ PLAY TAB ════════ -->
   <div id="play-view" class="hidden">
 
-    <!-- Config -->
     <div class="card" id="config-card">
-      <h2>⚙️ Instellingen</h2>
+      <div class="card-head">
+        <h2>🎯 Study setup</h2>
+      </div>
       <div class="config-grid">
-        <div class="config-item">
-          <label>Modus</label>
+        <div class="field" style="margin:0">
+          <label>Mode</label>
           <select id="mode-select">
-            <option value="all">Alle gebeurtenissen</option>
-            <option value="random">Willekeurige selectie</option>
+            <option value="all">All items in this list</option>
+            <option value="random">Random subset</option>
           </select>
         </div>
-        <div class="config-item" id="count-wrap">
-          <label>Aantal willekeurige items</label>
-          <input id="count-input" type="number" value="5" min="2" max="20" />
+        <div class="field" id="count-field" style="margin:0">
+          <label>Number of items</label>
+          <input id="count-input" type="number" value="5" min="2" />
         </div>
-        <div class="config-item">
-          <label>Toon jaren tijdens spel?</label>
-          <select id="show-years-select">
-            <option value="no">Nee (alleen beschrijving)</option>
-            <option value="yes">Ja (jaar zichtbaar)</option>
+        <div class="field" style="margin:0">
+          <label>Show years while studying?</label>
+          <select id="years-select">
+            <option value="no">No — descriptions only (harder)</option>
+            <option value="yes">Yes — show the year</option>
+          </select>
+        </div>
+        <div class="field" style="margin:0">
+          <label>Direction</label>
+          <select id="dir-select">
+            <option value="asc">Earliest → Latest</option>
+            <option value="desc">Latest → Earliest</option>
           </select>
         </div>
       </div>
       <div class="action-row">
-        <button class="btn btn-primary" onclick="startGame()">▶ Start</button>
+        <button class="btn btn-primary" onclick="startGame()">▶ Start studying</button>
       </div>
     </div>
 
-    <!-- Game board -->
     <div id="game-view">
       <div class="card">
-        <div class="game-header">
-          <h2>Zet de gebeurtenissen in de juiste volgorde</h2>
-          <div class="game-info">
-            <span>Items: <strong id="info-count">—</strong></span>
-            <span id="info-attempts"></span>
+        <div class="card-head">
+          <h2 id="game-title">Arrange in order</h2>
+          <div class="game-stats">
+            <span>Items <strong id="stat-count">—</strong></span>
+            <span id="stat-attempts"></span>
+            <span id="stat-best"></span>
           </div>
         </div>
 
-        <ul id="sortable-list"></ul>
+        <ul id="sortable"></ul>
 
-        <div class="action-row">
-          <button class="btn btn-success" onclick="checkOrder()">✔ Controleer</button>
-          <button class="btn btn-secondary" onclick="shuffleList()">🔀 Schud opnieuw</button>
-          <button class="btn btn-secondary" onclick="showConfig()">← Terug</button>
-        </div>
-
-        <div id="result-banner">
+        <div id="result">
           <h3 id="result-title"></h3>
           <p id="result-desc"></p>
+          <div class="progress"><div id="result-bar"></div></div>
+        </div>
+
+        <div class="action-row">
+          <button class="btn btn-success" onclick="checkOrder()">✓ Check answer</button>
+          <button class="btn btn-ghost" onclick="reshuffle()">🔀 Shuffle</button>
+          <button class="btn btn-ghost" onclick="revealAnswer()">👁 Reveal</button>
+          <button class="btn btn-ghost" onclick="showConfig()">← Back</button>
         </div>
       </div>
     </div>
-
-  </div><!-- /play-view -->
+  </div>
 
 </main>
+
+<!-- ─── List name modal ─── -->
+<div class="modal-overlay" id="list-modal">
+  <div class="modal">
+    <h3 id="modal-title">New list</h3>
+    <div class="field" style="margin:0">
+      <label>List name</label>
+      <input id="modal-input" type="text" placeholder="e.g. Old English Period" onkeydown="if(event.key==='Enter')confirmListModal()" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeListModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmListModal()">Save</button>
+    </div>
+  </div>
+</div>
 
 <div id="toast"></div>
 
 <script>
-/* ══════════════════════════════════════════════
-   DATA
-══════════════════════════════════════════════ */
-const DEFAULT_EVENTS = [
-  { year: "410",       text: "Romeinen verlaten Brittannië" },
-  { year: "450",       text: "Angelsaksisch-Jutse invasie" },
-  { year: "597",       text: "St. Augustinus (Kerstening)" },
-  { year: "658–680",   text: "Caedmons Hymne" },
-  { year: "673–735",   text: "Bede" },
-  { year: "700–750",   text: "Beowulf waarschijnlijk gecomponeerd" },
-  { year: "793",       text: "Vikingaanval op klooster Lindisfarne" },
-  { year: "848–899",   text: "Alfred de Grote" },
-  { year: "c890",      text: "Start van de Angelsaksische Kroniek" },
-  { year: "937",       text: "Slag bij Brunanburh" },
-  { year: "c1000",     text: "Beowulf opgeschreven" },
-];
+/* ════════════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════════════ */
+const STORE_KEY = 'cumlaude_v2';
 
-let events = JSON.parse(localStorage.getItem('cumlaude_events') || 'null') || DEFAULT_EVENTS.map((e,i) => ({...e, id: i}));
-let nextId = events.reduce((m,e) => Math.max(m, e.id), -1) + 1;
+const SEED = {
+  lists: [{
+    id: uid(),
+    name: 'Old English Period (~400–1150 AD)',
+    items: [
+      { id: uid(), year: '410',     text: 'Romans leave Britain' },
+      { id: uid(), year: '450',     text: 'Anglo-Saxon-Jutish invasion' },
+      { id: uid(), year: '597',     text: 'St. Augustine (Christianisation)' },
+      { id: uid(), year: '658–680', text: "Caedmon's Hymn" },
+      { id: uid(), year: '673–735', text: 'Bede' },
+      { id: uid(), year: '700–750', text: 'Beowulf likely composed' },
+      { id: uid(), year: '793',     text: 'Viking attack on Lindisfarne monastery' },
+      { id: uid(), year: '848–899', text: 'Alfred the Great' },
+      { id: uid(), year: 'c890',    text: 'Start of Anglo-Saxon Chronicle' },
+      { id: uid(), year: '937',     text: 'Battle of Brunanburh' },
+      { id: uid(), year: 'c1000',   text: 'Beowulf written down' },
+    ]
+  }]
+};
 
-function saveEvents() {
-  localStorage.setItem('cumlaude_events', JSON.stringify(events));
+let state = loadState();
+let currentListId = state.lists[0] ? state.lists[0].id : null;
+
+function uid() { return Math.random().toString(36).slice(2, 10); }
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.lists && parsed.lists.length) return parsed;
+    }
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(SEED));
 }
 
-/* ══════════════════════════════════════════════
+function save() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+
+function currentList() { return state.lists.find(l => l.id === currentListId); }
+
+/* ════════════════════════════════════════════════════════
+   LIST MANAGEMENT
+════════════════════════════════════════════════════════ */
+function renderListSelect() {
+  const sel = document.getElementById('list-select');
+  sel.innerHTML = '';
+  state.lists.forEach(l => {
+    const o = document.createElement('option');
+    o.value = l.id;
+    o.textContent = `${l.name}  (${l.items.length})`;
+    sel.appendChild(o);
+  });
+  sel.value = currentListId;
+}
+
+function selectList(id) {
+  currentListId = id;
+  renderItems();
+  updateCountMax();
+  showConfig();
+}
+
+let modalMode = 'new';
+function openListModal(mode) {
+  modalMode = mode;
+  document.getElementById('modal-title').textContent = mode === 'new' ? 'New list' : 'Rename list';
+  const input = document.getElementById('modal-input');
+  input.value = mode === 'rename' && currentList() ? currentList().name : '';
+  document.getElementById('list-modal').classList.add('show');
+  setTimeout(() => input.focus(), 50);
+}
+function closeListModal() { document.getElementById('list-modal').classList.remove('show'); }
+function confirmListModal() {
+  const name = document.getElementById('modal-input').value.trim();
+  if (!name) { toast('Please enter a name.', true); return; }
+  if (modalMode === 'new') {
+    const l = { id: uid(), name, items: [] };
+    state.lists.push(l);
+    currentListId = l.id;
+  } else if (currentList()) {
+    currentList().name = name;
+  }
+  save();
+  renderListSelect();
+  renderItems();
+  updateCountMax();
+  closeListModal();
+  toast(modalMode === 'new' ? 'List created.' : 'List renamed.');
+}
+
+function duplicateList() {
+  const src = currentList();
+  if (!src) return;
+  const copy = {
+    id: uid(),
+    name: src.name + ' (copy)',
+    items: src.items.map(it => ({ ...it, id: uid() }))
+  };
+  state.lists.push(copy);
+  currentListId = copy.id;
+  save();
+  renderListSelect();
+  renderItems();
+  updateCountMax();
+  toast('List duplicated.');
+}
+
+function deleteList() {
+  if (state.lists.length <= 1) { toast('You need at least one list.', true); return; }
+  if (!confirm(`Delete "${currentList().name}"? This cannot be undone.`)) return;
+  state.lists = state.lists.filter(l => l.id !== currentListId);
+  currentListId = state.lists[0].id;
+  save();
+  renderListSelect();
+  renderItems();
+  updateCountMax();
+  toast('List deleted.');
+}
+
+/* ════════════════════════════════════════════════════════
+   ITEM EDITING
+════════════════════════════════════════════════════════ */
+function renderItems() {
+  const list = currentList();
+  const wrap = document.getElementById('item-list');
+  const count = document.getElementById('item-count');
+  wrap.innerHTML = '';
+  count.textContent = list ? `· ${list.items.length} total` : '';
+
+  if (!list || list.items.length === 0) {
+    wrap.innerHTML = `<div class="empty-state"><span class="big">📭</span>No items yet. Paste a list above or add them one by one.</div>`;
+    return;
+  }
+
+  list.items.forEach((it, idx) => {
+    const row = document.createElement('div');
+    row.className = 'editor-row';
+    row.innerHTML = `
+      <span class="num">${idx + 1}</span>
+      <span class="year">${esc(it.year)}</span>
+      <span class="desc">${esc(it.text)}</span>
+      <span class="ctrl">
+        <button class="btn btn-ghost btn-sm btn-icon" onclick="moveItem('${it.id}',-1)" ${idx===0?'disabled':''}>↑</button>
+        <button class="btn btn-ghost btn-sm btn-icon" onclick="moveItem('${it.id}',1)" ${idx===list.items.length-1?'disabled':''}>↓</button>
+        <button class="btn btn-danger btn-sm btn-icon" onclick="deleteItem('${it.id}')">✕</button>
+      </span>`;
+    wrap.appendChild(row);
+  });
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function addOne() {
+  const list = currentList();
+  if (!list) return;
+  const year = document.getElementById('new-year').value.trim();
+  const text = document.getElementById('new-desc').value.trim();
+  if (!text) { toast('Please enter a description.', true); return; }
+  list.items.push({ id: uid(), year, text });
+  save();
+  document.getElementById('new-year').value = '';
+  document.getElementById('new-desc').value = '';
+  document.getElementById('new-desc').focus();
+  renderItems();
+  renderListSelect();
+  updateCountMax();
+}
+
+function deleteItem(id) {
+  const list = currentList();
+  list.items = list.items.filter(i => i.id !== id);
+  save();
+  renderItems();
+  renderListSelect();
+  updateCountMax();
+}
+
+function moveItem(id, dir) {
+  const list = currentList();
+  const i = list.items.findIndex(x => x.id === id);
+  const t = i + dir;
+  if (t < 0 || t >= list.items.length) return;
+  [list.items[i], list.items[t]] = [list.items[t], list.items[i]];
+  save();
+  renderItems();
+}
+
+function clearAllItems() {
+  const list = currentList();
+  if (!list || !list.items.length) return;
+  if (!confirm('Remove all items from this list?')) return;
+  list.items = [];
+  save();
+  renderItems();
+  renderListSelect();
+  updateCountMax();
+}
+
+/* ── Bulk paste import ── */
+function parseLine(line) {
+  // Try common delimiters in priority order
+  const delims = ['\t', ' | ', '|', ' — ', ' – ', ' - ', '—', '–'];
+  for (const d of delims) {
+    const idx = line.indexOf(d);
+    if (idx > -1) {
+      const left  = line.slice(0, idx).trim();
+      const right = line.slice(idx + d.length).trim();
+      // Treat left as year only if it looks year-ish and right is non-empty
+      if (right && looksLikeYear(left)) return { year: left, text: right };
+      if (right) return { year: left, text: right };
+    }
+  }
+  // No delimiter: detect "1234 Some text" pattern
+  const m = line.match(/^(c?\.?\s*\d{1,4}(?:\s*[–\-—]\s*c?\.?\s*\d{1,4})?)\s+(.+)$/);
+  if (m && looksLikeYear(m[1])) return { year: m[1].trim(), text: m[2].trim() };
+  return { year: '', text: line.trim() };
+}
+
+function looksLikeYear(s) {
+  return /^\s*c?\.?\s*\d{1,4}(?:\s*(?:bc|ad|bce|ce))?(?:\s*[–\-—]\s*c?\.?\s*\d{1,4}(?:\s*(?:bc|ad|bce|ce))?)?\s*$/i.test(s);
+}
+
+function bulkImport() {
+  const list = currentList();
+  if (!list) return;
+  const raw = document.getElementById('bulk-input').value;
+  const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(l => l.length);
+  if (!lines.length) { toast('Nothing to import.', true); return; }
+
+  const newItems = lines.map(l => ({ id: uid(), ...parseLine(l) }));
+
+  if (document.getElementById('replace-toggle').checked) {
+    list.items = newItems;
+  } else {
+    list.items.push(...newItems);
+  }
+  save();
+  document.getElementById('bulk-input').value = '';
+  document.getElementById('replace-toggle').checked = false;
+  renderItems();
+  renderListSelect();
+  updateCountMax();
+  toast(`Imported ${newItems.length} item${newItems.length === 1 ? '' : 's'}.`);
+}
+
+/* ════════════════════════════════════════════════════════
    TABS
-══════════════════════════════════════════════ */
+════════════════════════════════════════════════════════ */
 function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    t.classList.toggle('active', ['dataset','play'][i] === tab);
-  });
-  document.getElementById('dataset-view').classList.toggle('hidden', tab !== 'dataset');
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.getElementById('edit-view').classList.toggle('hidden', tab !== 'edit');
   document.getElementById('play-view').classList.toggle('hidden', tab !== 'play');
-  if (tab === 'dataset') renderTable();
-  if (tab === 'play') updateCountMax();
+  if (tab === 'play') { updateCountMax(); showConfig(); }
 }
 
-/* ══════════════════════════════════════════════
-   DATASET TABLE
-══════════════════════════════════════════════ */
-function renderTable() {
-  const tbody = document.getElementById('events-body');
-  tbody.innerHTML = '';
-  events.forEach((ev, idx) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td style="color:var(--muted);font-size:.8rem">${idx + 1}</td>
-      <td><em>${escHtml(ev.year)}</em></td>
-      <td>${escHtml(ev.text)}</td>
-      <td>
-        <div class="row-actions">
-          <button class="btn btn-secondary btn-sm" onclick="moveRow(${ev.id},-1)">↑</button>
-          <button class="btn btn-secondary btn-sm" onclick="moveRow(${ev.id}, 1)">↓</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteEvent(${ev.id})">✕</button>
-        </div>
-      </td>`;
-    tbody.appendChild(tr);
-  });
-}
-
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function addEvent() {
-  const year  = document.getElementById('new-year').value.trim();
-  const text  = document.getElementById('new-event').value.trim();
-  if (!text) { toast('Voer minstens een beschrijving in.'); return; }
-  events.push({ id: nextId++, year, text });
-  saveEvents();
-  document.getElementById('new-year').value  = '';
-  document.getElementById('new-event').value = '';
-  renderTable();
-  updateCountMax();
-}
-
-function deleteEvent(id) {
-  events = events.filter(e => e.id !== id);
-  saveEvents();
-  renderTable();
-  updateCountMax();
-}
-
-function moveRow(id, dir) {
-  const idx = events.findIndex(e => e.id === id);
-  const target = idx + dir;
-  if (target < 0 || target >= events.length) return;
-  [events[idx], events[target]] = [events[target], events[idx]];
-  saveEvents();
-  renderTable();
-}
-
-/* ══════════════════════════════════════════════
-   CONFIG
-══════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════
+   GAME
+════════════════════════════════════════════════════════ */
 const modeSelect = document.getElementById('mode-select');
-const countWrap  = document.getElementById('count-wrap');
 modeSelect.addEventListener('change', () => {
-  countWrap.classList.toggle('hidden', modeSelect.value !== 'random');
+  document.getElementById('count-field').style.display = modeSelect.value === 'random' ? '' : 'none';
 });
 
 function updateCountMax() {
+  const list = currentList();
+  const n = list ? list.items.length : 0;
   const inp = document.getElementById('count-input');
-  inp.max = events.length;
-  if (parseInt(inp.value) > events.length) inp.value = events.length;
+  inp.max = n;
+  if (parseInt(inp.value) > n) inp.value = Math.max(2, n);
 }
 
-/* ══════════════════════════════════════════════
-   GAME
-══════════════════════════════════════════════ */
-let gameItems = [];      // {id, year, text} in CORRECT order
-let dragSrcIdx = null;
+let solution = [];   // items in CORRECT order for current round
 let attempts = 0;
+let descending = false;
 let showYears = false;
+let dragIdx = null;
 
 function startGame() {
-  if (events.length < 2) { toast('Voeg minstens 2 gebeurtenissen toe.'); return; }
+  const list = currentList();
+  if (!list || list.items.length < 2) { toast('Add at least 2 items first.', true); switchTab('edit'); return; }
 
-  showYears = document.getElementById('show-years-select').value === 'yes';
+  showYears   = document.getElementById('years-select').value === 'yes';
+  descending  = document.getElementById('dir-select').value === 'desc';
 
+  let chosen;
   if (modeSelect.value === 'all') {
-    gameItems = [...events];
+    chosen = [...list.items];
   } else {
-    const n = Math.min(Math.max(2, parseInt(document.getElementById('count-input').value) || 5), events.length);
-    const shuffled = [...events].sort(() => Math.random() - .5);
-    // pick n, then sort by their original index (= correct order)
-    gameItems = shuffled.slice(0, n).sort((a, b) => events.indexOf(a) - events.indexOf(b));
+    const n = Math.min(Math.max(2, parseInt(document.getElementById('count-input').value) || 5), list.items.length);
+    const pool = shuffle([...list.items]);
+    chosen = pool.slice(0, n).sort((a, b) => list.items.indexOf(a) - list.items.indexOf(b));
   }
 
+  solution = descending ? [...chosen].reverse() : chosen;
   attempts = 0;
-  document.getElementById('info-count').textContent = gameItems.length;
-  document.getElementById('info-attempts').textContent = '';
 
-  renderSortable(shuffle([...gameItems]));
+  document.getElementById('stat-count').textContent = solution.length;
+  document.getElementById('stat-attempts').textContent = '';
+  const best = bestScore();
+  document.getElementById('stat-best').innerHTML = best != null ? `Best <strong>${best}%</strong>` : '';
+  document.getElementById('game-title').textContent =
+    `Arrange ${descending ? 'latest → earliest' : 'earliest → latest'}`;
+
+  renderSortable(shuffleDistinct(solution));
   clearResult();
-
   document.getElementById('config-card').style.display = 'none';
-  document.getElementById('game-view').style.display   = 'block';
+  document.getElementById('game-view').style.display = 'block';
 }
 
 function showConfig() {
   document.getElementById('config-card').style.display = 'block';
-  document.getElementById('game-view').style.display   = 'none';
-  clearResult();
+  document.getElementById('game-view').style.display = 'none';
+  document.getElementById('count-field').style.display = modeSelect.value === 'random' ? '' : 'none';
 }
 
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+    [a[i], a[j]] = [a[j], a[i]];
   }
-  return arr;
+  return a;
+}
+// Shuffle but try to avoid returning the exact solution order
+function shuffleDistinct(arr) {
+  let out = shuffle([...arr]);
+  if (arr.length > 1 && out.every((x, i) => x.id === arr[i].id)) {
+    [out[0], out[1]] = [out[1], out[0]];
+  }
+  return out;
 }
 
-/* ── Render sortable list ── */
 function renderSortable(items) {
-  const ul = document.getElementById('sortable-list');
+  const ul = document.getElementById('sortable');
   ul.innerHTML = '';
-  items.forEach((item, idx) => {
+  items.forEach((it, idx) => {
     const li = document.createElement('li');
     li.className = 'sort-item';
     li.draggable = true;
-    li.dataset.id = item.id;
+    li.dataset.id = it.id;
     li.innerHTML = `
-      <span class="drag-handle">⠿</span>
-      <span class="item-pos">${idx + 1}</span>
-      <span class="item-text">${escHtml(item.text)}</span>
-      ${showYears ? `<span class="item-year">${escHtml(item.year)}</span>` : ''}
-      <span class="item-status"></span>`;
+      <span class="handle">⠿</span>
+      <span class="pos">${idx + 1}</span>
+      <span class="txt">${esc(it.text)}</span>
+      ${showYears ? `<span class="yr">${esc(it.year)}</span>` : ''}
+      <span class="st"></span>`;
     attachDrag(li);
     ul.appendChild(li);
   });
 }
 
-/* ── Drag & Drop ── */
 function attachDrag(li) {
   li.addEventListener('dragstart', e => {
-    dragSrcIdx = [...li.parentNode.children].indexOf(li);
+    dragIdx = [...li.parentNode.children].indexOf(li);
     li.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
   });
   li.addEventListener('dragend', () => {
     li.classList.remove('dragging');
     document.querySelectorAll('.sort-item').forEach(el => el.classList.remove('drag-over'));
-    updatePositionNumbers();
+    renumber();
   });
   li.addEventListener('dragover', e => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
     document.querySelectorAll('.sort-item').forEach(el => el.classList.remove('drag-over'));
     li.classList.add('drag-over');
   });
@@ -634,129 +914,156 @@ function attachDrag(li) {
     const ul = li.parentNode;
     const items = [...ul.children];
     const overIdx = items.indexOf(li);
-    if (dragSrcIdx === null || dragSrcIdx === overIdx) return;
-    const moving = items[dragSrcIdx];
-    if (dragSrcIdx < overIdx) {
-      ul.insertBefore(moving, li.nextSibling);
-    } else {
-      ul.insertBefore(moving, li);
-    }
-    dragSrcIdx = null;
+    if (dragIdx === null || dragIdx === overIdx) return;
+    const moving = items[dragIdx];
+    ul.insertBefore(moving, dragIdx < overIdx ? li.nextSibling : li);
+    dragIdx = null;
+    resetStyles();
     clearResult();
-    resetItemStyles();
+    renumber();
   });
 
-  /* Touch support */
-  let touchStartY = 0, touchItem = null;
-  li.addEventListener('touchstart', e => {
-    touchItem = li;
-    touchStartY = e.touches[0].clientY;
-    dragSrcIdx = [...li.parentNode.children].indexOf(li);
+  /* Touch */
+  let touchEl = null;
+  li.addEventListener('touchstart', () => {
+    touchEl = li;
+    dragIdx = [...li.parentNode.children].indexOf(li);
+    li.classList.add('dragging');
   }, { passive: true });
   li.addEventListener('touchmove', e => {
+    if (!touchEl) return;
     e.preventDefault();
     const y = e.touches[0].clientY;
     const ul = li.parentNode;
-    const items = [...ul.children];
-    for (const item of items) {
-      const rect = item.getBoundingClientRect();
-      if (y > rect.top && y < rect.bottom && item !== touchItem) {
-        ul.insertBefore(touchItem, item);
-        dragSrcIdx = [...ul.children].indexOf(touchItem);
+    for (const item of ul.children) {
+      if (item === touchEl) continue;
+      const r = item.getBoundingClientRect();
+      if (y > r.top && y < r.bottom) {
+        const items = [...ul.children];
+        ul.insertBefore(touchEl, items.indexOf(item) > items.indexOf(touchEl) ? item.nextSibling : item);
         break;
       }
     }
-    updatePositionNumbers();
+    renumber();
+    resetStyles();
     clearResult();
-    resetItemStyles();
   }, { passive: false });
-  li.addEventListener('touchend', () => { touchItem = null; });
+  li.addEventListener('touchend', () => { if (touchEl) touchEl.classList.remove('dragging'); touchEl = null; });
 }
 
-function updatePositionNumbers() {
-  document.querySelectorAll('.sort-item').forEach((li, i) => {
-    li.querySelector('.item-pos').textContent = i + 1;
-  });
+function renumber() {
+  document.querySelectorAll('#sortable .pos').forEach((el, i) => el.textContent = i + 1);
 }
-
-function resetItemStyles() {
+function resetStyles() {
   document.querySelectorAll('.sort-item').forEach(li => {
     li.classList.remove('correct', 'wrong');
-    li.querySelector('.item-status').textContent = '';
+    li.querySelector('.st').textContent = '';
   });
 }
 
-/* ── Check order ── */
 function checkOrder() {
-  const ul = document.getElementById('sortable-list');
-  const items = [...ul.children];
+  const items = [...document.querySelectorAll('#sortable .sort-item')];
   attempts++;
-
   let correct = 0;
   items.forEach((li, pos) => {
-    const id  = parseInt(li.dataset.id);
-    const correctPos = gameItems.findIndex(e => e.id === id);
-    const isRight = correctPos === pos;
-    li.classList.toggle('correct', isRight);
-    li.classList.toggle('wrong',  !isRight);
-    li.querySelector('.item-status').textContent = isRight ? '✓' : '✗';
-    if (isRight) correct++;
+    const id = li.dataset.id;
+    const ok = solution[pos] && solution[pos].id === id;
+    li.classList.toggle('correct', ok);
+    li.classList.toggle('wrong', !ok);
+    li.querySelector('.st').textContent = ok ? '✓' : '✗';
+    if (ok) correct++;
   });
 
-  const total  = gameItems.length;
-  const pct    = Math.round((correct / total) * 100);
-  const banner = document.getElementById('result-banner');
-  const title  = document.getElementById('result-title');
-  const desc   = document.getElementById('result-desc');
+  const total = solution.length;
+  const pct = Math.round((correct / total) * 100);
+  recordScore(pct);
 
-  document.getElementById('info-attempts').textContent = `Pogingen: ${attempts}`;
+  document.getElementById('stat-attempts').innerHTML = `Attempts <strong>${attempts}</strong>`;
+  const best = bestScore();
+  document.getElementById('stat-best').innerHTML = best != null ? `Best <strong>${best}%</strong>` : '';
+
+  const banner = document.getElementById('result');
+  const bar = document.getElementById('result-bar');
+  bar.style.width = pct + '%';
 
   if (correct === total) {
     banner.className = 'success';
-    title.textContent = `🎉 Uitstekend! Alles correct! (${attempts} ${attempts === 1 ? 'poging' : 'pogingen'})`;
-    desc.textContent  = 'Je hebt alle gebeurtenissen in de juiste volgorde gezet.';
+    document.getElementById('result-title').textContent = `🎉 Perfect! All ${total} in order.`;
+    document.getElementById('result-desc').textContent = `Solved in ${attempts} attempt${attempts === 1 ? '' : 's'}.`;
+    bar.style.background = 'var(--green)';
   } else if (pct >= 50) {
     banner.className = 'partial';
-    title.textContent = `${correct} van de ${total} correct (${pct}%)`;
-    desc.textContent  = 'Bijna! De groene items staan goed, de rode moeten nog verplaatst worden.';
+    document.getElementById('result-title').textContent = `${correct} / ${total} correct (${pct}%)`;
+    document.getElementById('result-desc').textContent = 'Close! Green items are placed correctly — fix the red ones.';
+    bar.style.background = 'var(--amber)';
   } else {
     banner.className = 'fail';
-    title.textContent = `${correct} van de ${total} correct (${pct}%)`;
-    desc.textContent  = 'Nog niet helemaal. Probeer het opnieuw – kijk naar de rode items.';
+    document.getElementById('result-title').textContent = `${correct} / ${total} correct (${pct}%)`;
+    document.getElementById('result-desc').textContent = 'Keep going — focus on the red items and try again.';
+    bar.style.background = 'var(--red)';
   }
   banner.style.display = 'block';
 }
 
-function shuffleList() {
-  const ul = document.getElementById('sortable-list');
-  const items = [...ul.children].map(li => {
-    const id = parseInt(li.dataset.id);
-    return gameItems.find(e => e.id === id);
-  });
-  renderSortable(shuffle(items));
+function reshuffle() {
+  const ul = document.getElementById('sortable');
+  const items = [...ul.children].map(li => solution.find(s => s.id === li.dataset.id));
+  renderSortable(shuffleDistinct(items));
   clearResult();
 }
 
-function clearResult() {
-  document.getElementById('result-banner').style.display = 'none';
+function revealAnswer() {
+  renderSortable(solution);
+  resetStyles();
+  document.querySelectorAll('#sortable .sort-item').forEach(li => {
+    li.classList.add('correct');
+    li.querySelector('.st').textContent = '✓';
+  });
+  const banner = document.getElementById('result');
+  banner.className = 'partial';
+  document.getElementById('result-title').textContent = '👁 Answer revealed';
+  document.getElementById('result-desc').textContent = 'Study the correct order, then shuffle to try again.';
+  document.getElementById('result-bar').style.width = '100%';
+  document.getElementById('result-bar').style.background = 'var(--amber)';
+  banner.style.display = 'block';
 }
 
-/* ══════════════════════════════════════════════
+function clearResult() { document.getElementById('result').style.display = 'none'; }
+
+/* ── Per-list best score (localStorage) ── */
+function scoreKey() { return 'cumlaude_best_' + currentListId; }
+function bestScore() {
+  const v = localStorage.getItem(scoreKey());
+  return v == null ? null : parseInt(v);
+}
+function recordScore(pct) {
+  const cur = bestScore();
+  if (cur == null || pct > cur) localStorage.setItem(scoreKey(), pct);
+}
+
+/* ════════════════════════════════════════════════════════
    TOAST
-══════════════════════════════════════════════ */
+════════════════════════════════════════════════════════ */
 let toastTimer;
-function toast(msg) {
+function toast(msg, isErr) {
   const el = document.getElementById('toast');
   el.textContent = msg;
+  el.classList.toggle('err', !!isErr);
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
 }
 
-/* ══════════════════════════════════════════════
+/* Close modal on overlay click */
+document.getElementById('list-modal').addEventListener('click', e => {
+  if (e.target.id === 'list-modal') closeListModal();
+});
+
+/* ════════════════════════════════════════════════════════
    INIT
-══════════════════════════════════════════════ */
-renderTable();
+════════════════════════════════════════════════════════ */
+renderListSelect();
+renderItems();
 updateCountMax();
 </script>
 </body>
