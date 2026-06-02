@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CumLaude – Volgorde Leren</title>
+  <style>
+    :root {
+      --blue:    #1a56a7;
+      --blue-lt: #3b82f6;
+      --bg:      #f0f4f9;
+      --card:    #ffffff;
+      --border:  #d1dce8;
+      --text:    #1e293b;
+      --muted:   #64748b;
+      --green:   #16a34a;
+      --red:     #dc2626;
+      --yellow:  #ca8a04;
+      --radius:  10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 0 60px;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--blue);
+      color: #fff;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.18);
+    }
+    header h1 { font-size: 1.7rem; letter-spacing: .5px; }
+    header span { font-size: .95rem; opacity: .75; margin-top: 2px; }
+
+    /* ── Layout ── */
+    main { max-width: 860px; margin: 0 auto; padding: 32px 16px 0; }
+
+    /* ── Section cards ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card h2 {
+      font-size: 1.05rem;
+      color: var(--blue);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── Tabs ── */
+    .tabs { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+    .tab {
+      padding: 8px 20px;
+      border-radius: 6px;
+      border: 2px solid var(--border);
+      background: var(--card);
+      cursor: pointer;
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all .15s;
+    }
+    .tab:hover { border-color: var(--blue-lt); color: var(--blue); }
+    .tab.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+    /* ── Dataset editor ── */
+    #dataset-view table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+    }
+    #dataset-view th {
+      background: #e8eef5;
+      text-align: left;
+      padding: 8px 12px;
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--muted);
+    }
+    #dataset-view td {
+      padding: 7px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    #dataset-view tr:last-child td { border-bottom: none; }
+    #dataset-view tr:hover td { background: #f8fafc; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: .875rem;
+      font-weight: 600;
+      transition: opacity .15s, transform .1s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-primary:hover { opacity: .88; }
+    .btn-secondary { background: #e2e8f0; color: var(--text); }
+    .btn-secondary:hover { background: #cbd5e1; }
+    .btn-danger  { background: #fee2e2; color: var(--red); }
+    .btn-danger:hover { background: #fecaca; }
+    .btn-success { background: var(--green); color: #fff; }
+    .btn-success:hover { opacity: .88; }
+    .btn-sm { padding: 4px 10px; font-size: .78rem; }
+
+    .row-actions { display: flex; gap: 6px; }
+
+    /* Add-event form */
+    .add-form {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .add-form input {
+      flex: 1;
+      min-width: 120px;
+      padding: 8px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      font-size: .875rem;
+    }
+    .add-form input:focus { outline: none; border-color: var(--blue-lt); }
+
+    /* ── Game config ── */
+    .config-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 520px) { .config-grid { grid-template-columns: 1fr; } }
+
+    .config-item label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      margin-bottom: 6px;
+    }
+    .config-item select, .config-item input[type=number] {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      font-size: .9rem;
+      background: var(--card);
+    }
+    .config-item select:focus,
+    .config-item input[type=number]:focus { outline: none; border-color: var(--blue-lt); }
+
+    /* ── Game board ── */
+    #game-view { display: none; }
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .game-header h2 { font-size: 1.1rem; color: var(--blue); }
+
+    .game-info {
+      display: flex;
+      gap: 16px;
+      font-size: .85rem;
+      color: var(--muted);
+      align-items: center;
+    }
+    .game-info strong { color: var(--text); }
+
+    /* sortable list */
+    #sortable-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sort-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      cursor: grab;
+      user-select: none;
+      transition: box-shadow .15s, border-color .15s, background .15s;
+      position: relative;
+    }
+    .sort-item:active { cursor: grabbing; }
+    .sort-item.dragging {
+      opacity: .45;
+      border-color: var(--blue-lt);
+    }
+    .sort-item.drag-over {
+      border-color: var(--blue-lt);
+      background: #eff6ff;
+      box-shadow: 0 0 0 3px rgba(59,130,246,.2);
+    }
+    .sort-item.correct {
+      border-color: var(--green);
+      background: #f0fdf4;
+    }
+    .sort-item.wrong {
+      border-color: var(--red);
+      background: #fff1f2;
+    }
+
+    .drag-handle {
+      color: #94a3b8;
+      font-size: 1.1rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .item-pos {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #e8eef5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .item-text { flex: 1; font-size: .925rem; }
+    .item-year {
+      font-size: .8rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+    .item-status { font-size: 1.1rem; flex-shrink: 0; width: 20px; text-align: center; }
+
+    /* ── Result banner ── */
+    #result-banner {
+      display: none;
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      margin-top: 20px;
+      font-size: .95rem;
+    }
+    #result-banner.success {
+      background: #f0fdf4;
+      border: 2px solid var(--green);
+      color: var(--green);
+    }
+    #result-banner.partial {
+      background: #fffbeb;
+      border: 2px solid var(--yellow);
+      color: var(--yellow);
+    }
+    #result-banner.fail {
+      background: #fff1f2;
+      border: 2px solid var(--red);
+      color: var(--red);
+    }
+    #result-banner h3 { font-size: 1.1rem; margin-bottom: 4px; }
+    #result-banner p  { font-size: .875rem; opacity: .85; }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* ── Score badge ── */
+    .score-badge {
+      display: inline-block;
+      background: var(--blue);
+      color: #fff;
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-size: .8rem;
+      font-weight: 700;
+      margin-left: 8px;
+    }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1e293b;
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: .875rem;
+      transition: transform .3s ease;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      header { padding: 14px 18px; }
+      header h1 { font-size: 1.3rem; }
+      .card { padding: 16px; }
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>CumLaude</h1>
+    <span>Leer de volgorde van historische gebeurtenissen</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── TABS ── -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('dataset')">📚 Gegevens</button>
+    <button class="tab" onclick="switchTab('play')">🎮 Spelen</button>
+  </div>
+
+  <!-- ════ DATASET TAB ════ -->
+  <div id="dataset-view">
+    <div class="card">
+      <h2>📋 Gebeurtenissen</h2>
+      <table id="events-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Jaar / Periode</th>
+            <th>Gebeurtenis</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="events-body"></tbody>
+      </table>
+
+      <div class="add-form">
+        <input id="new-year"  type="text" placeholder="Jaar (bijv. 793 of 700–750)" />
+        <input id="new-event" type="text" placeholder="Beschrijving van de gebeurtenis" />
+        <button class="btn btn-primary" onclick="addEvent()">＋ Toevoegen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ PLAY TAB ════ -->
+  <div id="play-view" class="hidden">
+
+    <!-- Config -->
+    <div class="card" id="config-card">
+      <h2>⚙️ Instellingen</h2>
+      <div class="config-grid">
+        <div class="config-item">
+          <label>Modus</label>
+          <select id="mode-select">
+            <option value="all">Alle gebeurtenissen</option>
+            <option value="random">Willekeurige selectie</option>
+          </select>
+        </div>
+        <div class="config-item" id="count-wrap">
+          <label>Aantal willekeurige items</label>
+          <input id="count-input" type="number" value="5" min="2" max="20" />
+        </div>
+        <div class="config-item">
+          <label>Toon jaren tijdens spel?</label>
+          <select id="show-years-select">
+            <option value="no">Nee (alleen beschrijving)</option>
+            <option value="yes">Ja (jaar zichtbaar)</option>
+          </select>
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="btn btn-primary" onclick="startGame()">▶ Start</button>
+      </div>
+    </div>
+
+    <!-- Game board -->
+    <div id="game-view">
+      <div class="card">
+        <div class="game-header">
+          <h2>Zet de gebeurtenissen in de juiste volgorde</h2>
+          <div class="game-info">
+            <span>Items: <strong id="info-count">—</strong></span>
+            <span id="info-attempts"></span>
+          </div>
+        </div>
+
+        <ul id="sortable-list"></ul>
+
+        <div class="action-row">
+          <button class="btn btn-success" onclick="checkOrder()">✔ Controleer</button>
+          <button class="btn btn-secondary" onclick="shuffleList()">🔀 Schud opnieuw</button>
+          <button class="btn btn-secondary" onclick="showConfig()">← Terug</button>
+        </div>
+
+        <div id="result-banner">
+          <h3 id="result-title"></h3>
+          <p id="result-desc"></p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /play-view -->
+
+</main>
+
+<div id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════
+   DATA
+══════════════════════════════════════════════ */
+const DEFAULT_EVENTS = [
+  { year: "410",       text: "Romeinen verlaten Brittannië" },
+  { year: "450",       text: "Angelsaksisch-Jutse invasie" },
+  { year: "597",       text: "St. Augustinus (Kerstening)" },
+  { year: "658–680",   text: "Caedmons Hymne" },
+  { year: "673–735",   text: "Bede" },
+  { year: "700–750",   text: "Beowulf waarschijnlijk gecomponeerd" },
+  { year: "793",       text: "Vikingaanval op klooster Lindisfarne" },
+  { year: "848–899",   text: "Alfred de Grote" },
+  { year: "c890",      text: "Start van de Angelsaksische Kroniek" },
+  { year: "937",       text: "Slag bij Brunanburh" },
+  { year: "c1000",     text: "Beowulf opgeschreven" },
+];
+
+let events = JSON.parse(localStorage.getItem('cumlaude_events') || 'null') || DEFAULT_EVENTS.map((e,i) => ({...e, id: i}));
+let nextId = events.reduce((m,e) => Math.max(m, e.id), -1) + 1;
+
+function saveEvents() {
+  localStorage.setItem('cumlaude_events', JSON.stringify(events));
+}
+
+/* ══════════════════════════════════════════════
+   TABS
+══════════════════════════════════════════════ */
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['dataset','play'][i] === tab);
+  });
+  document.getElementById('dataset-view').classList.toggle('hidden', tab !== 'dataset');
+  document.getElementById('play-view').classList.toggle('hidden', tab !== 'play');
+  if (tab === 'dataset') renderTable();
+  if (tab === 'play') updateCountMax();
+}
+
+/* ══════════════════════════════════════════════
+   DATASET TABLE
+══════════════════════════════════════════════ */
+function renderTable() {
+  const tbody = document.getElementById('events-body');
+  tbody.innerHTML = '';
+  events.forEach((ev, idx) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="color:var(--muted);font-size:.8rem">${idx + 1}</td>
+      <td><em>${escHtml(ev.year)}</em></td>
+      <td>${escHtml(ev.text)}</td>
+      <td>
+        <div class="row-actions">
+          <button class="btn btn-secondary btn-sm" onclick="moveRow(${ev.id},-1)">↑</button>
+          <button class="btn btn-secondary btn-sm" onclick="moveRow(${ev.id}, 1)">↓</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteEvent(${ev.id})">✕</button>
+        </div>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function addEvent() {
+  const year  = document.getElementById('new-year').value.trim();
+  const text  = document.getElementById('new-event').value.trim();
+  if (!text) { toast('Voer minstens een beschrijving in.'); return; }
+  events.push({ id: nextId++, year, text });
+  saveEvents();
+  document.getElementById('new-year').value  = '';
+  document.getElementById('new-event').value = '';
+  renderTable();
+  updateCountMax();
+}
+
+function deleteEvent(id) {
+  events = events.filter(e => e.id !== id);
+  saveEvents();
+  renderTable();
+  updateCountMax();
+}
+
+function moveRow(id, dir) {
+  const idx = events.findIndex(e => e.id === id);
+  const target = idx + dir;
+  if (target < 0 || target >= events.length) return;
+  [events[idx], events[target]] = [events[target], events[idx]];
+  saveEvents();
+  renderTable();
+}
+
+/* ══════════════════════════════════════════════
+   CONFIG
+══════════════════════════════════════════════ */
+const modeSelect = document.getElementById('mode-select');
+const countWrap  = document.getElementById('count-wrap');
+modeSelect.addEventListener('change', () => {
+  countWrap.classList.toggle('hidden', modeSelect.value !== 'random');
+});
+
+function updateCountMax() {
+  const inp = document.getElementById('count-input');
+  inp.max = events.length;
+  if (parseInt(inp.value) > events.length) inp.value = events.length;
+}
+
+/* ══════════════════════════════════════════════
+   GAME
+══════════════════════════════════════════════ */
+let gameItems = [];      // {id, year, text} in CORRECT order
+let dragSrcIdx = null;
+let attempts = 0;
+let showYears = false;
+
+function startGame() {
+  if (events.length < 2) { toast('Voeg minstens 2 gebeurtenissen toe.'); return; }
+
+  showYears = document.getElementById('show-years-select').value === 'yes';
+
+  if (modeSelect.value === 'all') {
+    gameItems = [...events];
+  } else {
+    const n = Math.min(Math.max(2, parseInt(document.getElementById('count-input').value) || 5), events.length);
+    const shuffled = [...events].sort(() => Math.random() - .5);
+    // pick n, then sort by their original index (= correct order)
+    gameItems = shuffled.slice(0, n).sort((a, b) => events.indexOf(a) - events.indexOf(b));
+  }
+
+  attempts = 0;
+  document.getElementById('info-count').textContent = gameItems.length;
+  document.getElementById('info-attempts').textContent = '';
+
+  renderSortable(shuffle([...gameItems]));
+  clearResult();
+
+  document.getElementById('config-card').style.display = 'none';
+  document.getElementById('game-view').style.display   = 'block';
+}
+
+function showConfig() {
+  document.getElementById('config-card').style.display = 'block';
+  document.getElementById('game-view').style.display   = 'none';
+  clearResult();
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/* ── Render sortable list ── */
+function renderSortable(items) {
+  const ul = document.getElementById('sortable-list');
+  ul.innerHTML = '';
+  items.forEach((item, idx) => {
+    const li = document.createElement('li');
+    li.className = 'sort-item';
+    li.draggable = true;
+    li.dataset.id = item.id;
+    li.innerHTML = `
+      <span class="drag-handle">⠿</span>
+      <span class="item-pos">${idx + 1}</span>
+      <span class="item-text">${escHtml(item.text)}</span>
+      ${showYears ? `<span class="item-year">${escHtml(item.year)}</span>` : ''}
+      <span class="item-status"></span>`;
+    attachDrag(li);
+    ul.appendChild(li);
+  });
+}
+
+/* ── Drag & Drop ── */
+function attachDrag(li) {
+  li.addEventListener('dragstart', e => {
+    dragSrcIdx = [...li.parentNode.children].indexOf(li);
+    li.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  li.addEventListener('dragend', () => {
+    li.classList.remove('dragging');
+    document.querySelectorAll('.sort-item').forEach(el => el.classList.remove('drag-over'));
+    updatePositionNumbers();
+  });
+  li.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    document.querySelectorAll('.sort-item').forEach(el => el.classList.remove('drag-over'));
+    li.classList.add('drag-over');
+  });
+  li.addEventListener('dragleave', () => li.classList.remove('drag-over'));
+  li.addEventListener('drop', e => {
+    e.preventDefault();
+    const ul = li.parentNode;
+    const items = [...ul.children];
+    const overIdx = items.indexOf(li);
+    if (dragSrcIdx === null || dragSrcIdx === overIdx) return;
+    const moving = items[dragSrcIdx];
+    if (dragSrcIdx < overIdx) {
+      ul.insertBefore(moving, li.nextSibling);
+    } else {
+      ul.insertBefore(moving, li);
+    }
+    dragSrcIdx = null;
+    clearResult();
+    resetItemStyles();
+  });
+
+  /* Touch support */
+  let touchStartY = 0, touchItem = null;
+  li.addEventListener('touchstart', e => {
+    touchItem = li;
+    touchStartY = e.touches[0].clientY;
+    dragSrcIdx = [...li.parentNode.children].indexOf(li);
+  }, { passive: true });
+  li.addEventListener('touchmove', e => {
+    e.preventDefault();
+    const y = e.touches[0].clientY;
+    const ul = li.parentNode;
+    const items = [...ul.children];
+    for (const item of items) {
+      const rect = item.getBoundingClientRect();
+      if (y > rect.top && y < rect.bottom && item !== touchItem) {
+        ul.insertBefore(touchItem, item);
+        dragSrcIdx = [...ul.children].indexOf(touchItem);
+        break;
+      }
+    }
+    updatePositionNumbers();
+    clearResult();
+    resetItemStyles();
+  }, { passive: false });
+  li.addEventListener('touchend', () => { touchItem = null; });
+}
+
+function updatePositionNumbers() {
+  document.querySelectorAll('.sort-item').forEach((li, i) => {
+    li.querySelector('.item-pos').textContent = i + 1;
+  });
+}
+
+function resetItemStyles() {
+  document.querySelectorAll('.sort-item').forEach(li => {
+    li.classList.remove('correct', 'wrong');
+    li.querySelector('.item-status').textContent = '';
+  });
+}
+
+/* ── Check order ── */
+function checkOrder() {
+  const ul = document.getElementById('sortable-list');
+  const items = [...ul.children];
+  attempts++;
+
+  let correct = 0;
+  items.forEach((li, pos) => {
+    const id  = parseInt(li.dataset.id);
+    const correctPos = gameItems.findIndex(e => e.id === id);
+    const isRight = correctPos === pos;
+    li.classList.toggle('correct', isRight);
+    li.classList.toggle('wrong',  !isRight);
+    li.querySelector('.item-status').textContent = isRight ? '✓' : '✗';
+    if (isRight) correct++;
+  });
+
+  const total  = gameItems.length;
+  const pct    = Math.round((correct / total) * 100);
+  const banner = document.getElementById('result-banner');
+  const title  = document.getElementById('result-title');
+  const desc   = document.getElementById('result-desc');
+
+  document.getElementById('info-attempts').textContent = `Pogingen: ${attempts}`;
+
+  if (correct === total) {
+    banner.className = 'success';
+    title.textContent = `🎉 Uitstekend! Alles correct! (${attempts} ${attempts === 1 ? 'poging' : 'pogingen'})`;
+    desc.textContent  = 'Je hebt alle gebeurtenissen in de juiste volgorde gezet.';
+  } else if (pct >= 50) {
+    banner.className = 'partial';
+    title.textContent = `${correct} van de ${total} correct (${pct}%)`;
+    desc.textContent  = 'Bijna! De groene items staan goed, de rode moeten nog verplaatst worden.';
+  } else {
+    banner.className = 'fail';
+    title.textContent = `${correct} van de ${total} correct (${pct}%)`;
+    desc.textContent  = 'Nog niet helemaal. Probeer het opnieuw – kijk naar de rode items.';
+  }
+  banner.style.display = 'block';
+}
+
+function shuffleList() {
+  const ul = document.getElementById('sortable-list');
+  const items = [...ul.children].map(li => {
+    const id = parseInt(li.dataset.id);
+    return gameItems.find(e => e.id === id);
+  });
+  renderSortable(shuffle(items));
+  clearResult();
+}
+
+function clearResult() {
+  document.getElementById('result-banner').style.display = 'none';
+}
+
+/* ══════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════ */
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+renderTable();
+updateCountMax();
+</script>
+</body>
+</html>
